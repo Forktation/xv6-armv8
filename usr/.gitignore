@@ -1,4 +1,4 @@
-build
+_*
 *.asm
 *.sym
 *.o

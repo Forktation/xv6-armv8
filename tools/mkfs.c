@@ -11,7 +11,7 @@
 #include "stat.h"
 #include "param.h"
 
-#define static_assert(a, b) do { switch (0) case 0: case (a): ; } while (0)
+#define static_assert_1(a, b) do { switch (0) case 0: case (a): ; } while (0)
 
 int nblocks = 985;
 int nlog = LOGSIZE;
@@ -67,7 +67,7 @@ main(int argc, char *argv[])
   struct dinode din;
 
 
-  static_assert(sizeof(int) == 4, "Integers must be 4 bytes!");
+  static_assert_1(sizeof(int) == 4, "Integers must be 4 bytes!");
 
   if(argc < 2){
     fprintf(stderr, "Usage: mkfs fs.img files...\n");
@@ -124,7 +124,7 @@ main(int argc, char *argv[])
       perror(argv[i]);
       exit(1);
     }
-    
+
     // Skip leading _ in name when writing to file system.
     // The binaries are named _rm, _cat, etc. to keep the
     // build operating system from trying to execute them
