@@ -1,4 +1,4 @@
-# specify path to QEMU, installed with MacPorts 
+# specify path to QEMU, installed with MacPorts
 QEMU = qemu-system-arm
 
 include makefile.inc
@@ -36,7 +36,7 @@ OBJS = \
 	device/gic.o
 
 #device/picirq.o \
-	
+
 KERN_OBJS = $(OBJS) entry.o
 kernel.elf: $(addprefix build/,$(KERN_OBJS)) kernel.ld build/initcode build/fs.img
 	cp -f build/initcode initcode
@@ -68,7 +68,7 @@ build/fs.img:
 	make -C tools
 	make -C usr
 
-clean: 
+clean:
 	rm -rf build
 	rm -f *.o *.d *.asm *.sym vectors.S bootblock entryother \
 	initcode initcode.out kernel xv6.img fs.img kernel.elf memfs
