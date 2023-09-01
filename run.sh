@@ -1,11 +1,9 @@
 echo run armv8 without qemu.log
-export PATH=$PATH:path_to_qemu_softmmu/qemu-arm/aarch64-softmmu
+# export PATH=$PATH:path_to_qemu_softmmu/qemu-arm/aarch64-softmmu
 
 clear
 
-qemu-system-aarch64 -machine virt -cpu cortex-a57 \
--machine type=virt -m 128 -nographic \
--singlestep -kernel kernel.elf
+qemu-system-aarch64 -machine virt -cpu cortex-a57 -machine type=virt -m 128 -nographic -singlestep -kernel kernel.elf
 # skip: -singlestep
 # try skip -cpu, as str r0, [fp,#-8] not write onto mem
 # -cpu cortex-a15

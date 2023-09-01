@@ -55,35 +55,33 @@ static volatile uint* gic_base;
  *  bit    pos = m MOD 32;
  */
 static void gicd_set_bit(int base, int id, int bval) {
-	int offset = id/32;
-	int bitpos = id%32;
-	uint rval = GICD_REG(base+4*offset);
-	if(bval)
+	int offset = id / 32;
+	int bitpos = id % 32;
+	uint rval = GICD_REG(base + 4 * offset);
+	if (bval)
 		rval |= 1 << bitpos;
 	else
-		rval &= ~(1<< bitpos);
-	GICD_REG(base+ 4*offset) = rval;
+		rval &= ~(1 << bitpos);
+	GICD_REG(base + 4 * offset) = rval;
 }
 
 
 void gicc_set_bit(int base, int id, int bval) {
-	int offset = id/32;
-	int bitpos = id%32;
-	uint rval = GICC_REG(base+4*offset);
-	if(bval)
+	int offset = id / 32;
+	int bitpos = id % 32;
+	uint rval = GICC_REG(base + 4 * offset);
+	if (bval)
 		rval |= 1 << bitpos;
 	else
-		rval &= ~(1<< bitpos);
-	GICC_REG(base+ 4*offset) = rval;
+		rval &= ~(1 << bitpos);
+	GICC_REG(base + 4 * offset) = rval;
 }
 
-static int spi2id(int spi)
-{
-	return spi+32;
+static int spi2id(int spi) {
+	return spi + 32;
 }
 
-static void gd_spi_enable(int spi)
-{
+static void gd_spi_enable(int spi) {
 	int id = spi2id(spi);
 	gicd_set_bit(GICD_ISENABLE, id, 1);
 }
@@ -92,45 +90,41 @@ static void gd_spi_enable(int spi)
  * GIC spec ch4.3.4
  *
  */
-static void gd_spi_group0(int spi)
-{
+static void gd_spi_group0(int spi) {
 	return;
 }
 
 /* set target processor
  */
-static void gd_spi_target0(int spi)
-{
-	int id=spi2id(spi);
-	int offset = id/4;
-	int bitpos = (id%4)*8;
-	uint rval = GICD_REG(GICD_ITARGET+4*offset);
-	unsigned char tcpu=0x01;
+static void gd_spi_target0(int spi) {
+	int id = spi2id(spi);
+	int offset = id / 4;
+	int bitpos = (id % 4) * 8;
+	uint rval = GICD_REG(GICD_ITARGET + 4 * offset);
+	unsigned char tcpu = 0x01;
 	rval |= tcpu << bitpos;
-	GICD_REG(GICD_ITARGET+ 4*offset) = rval;	
+	GICD_REG(GICD_ITARGET + 4 * offset) = rval;
 }
 
 /* set cfg
  */
-static void gd_spi_setcfg(int spi, int is_edge)
-{
-	int id=spi2id(spi);
-	int offset = id/16;
-	int bitpos = (id%16)*2;
-	uint rval = GICD_REG(GICD_ICFG+4*offset);
-	uint vmask=0x03;
+static void gd_spi_setcfg(int spi, int is_edge) {
+	int id = spi2id(spi);
+	int offset = id / 16;
+	int bitpos = (id % 16) * 2;
+	uint rval = GICD_REG(GICD_ICFG + 4 * offset);
+	uint vmask = 0x03;
 	rval &= ~(vmask << bitpos);
 	if (is_edge)
 		rval |= 0x02 << bitpos;
-	GICD_REG(GICD_ICFG+ 4*offset) = rval;	
+	GICD_REG(GICD_ICFG + 4 * offset) = rval;
 }
 
 /*
  * TODO: process itype other than SPI
  */
-static void gic_dist_configure(int itype, int num)
-{
-	int spi= num;
+static void gic_dist_configure(int itype, int num) {
+	int spi = num;
 	gd_spi_setcfg(spi, 1);
 	gd_spi_enable(spi);
 	gd_spi_group0(spi);
@@ -138,23 +132,21 @@ static void gic_dist_configure(int itype, int num)
 }
 
 /*
- * initial every spi pin 
+ * initial every spi pin
  */
-static void gic_dist_init() 
-{
+static void gic_dist_init() {
 	/* cprintf("Found gic type: 0x%x\n", GICD_REG(GICD_TYPER)); here is 0x4 **/
 }
 
-/* HCLIN: the intc does not work until set the priority mask 
+/* HCLIN: the intc does not work until set the priority mask
  * for a intc
- *   enable int pin, 
- *   set pin trigger type, 
- *   enable int global, 
+ *   enable int pin,
+ *   set pin trigger type,
+ *   enable int global,
  *   set mask
  *
  */
-static void gic_cpu_init() 
-{
+static void gic_cpu_init() {
 	/* cprintf("gic cpuif type:0x%x\n", GICC_REG(GICC_IIDR)); no simulate in qemu */
 	GICC_REG(GICC_PMR) = 0x0f; /* priority value 0 to 0xe is supported */
 }
@@ -162,33 +154,28 @@ static void gic_cpu_init()
 
 /* enable group 0 only
  */
-static void gic_enable()
-{
+static void gic_enable() {
 	GICD_REG(GICD_CTLR) |= 1;
 	GICC_REG(GICC_CTLR) |= 1;
 }
 
 /* disable group 0 only
  */
-void gic_disable()
-{
+void gic_disable() {
 	GICD_REG(GICD_CTLR) &= ~(uint)1;
 	GICD_REG(GICC_CTLR) &= ~(uint)1;
 }
 /* configure and enable interrupt
  */
-static void gic_configure(int itype, int num)
-{
+static void gic_configure(int itype, int num) {
 	gic_dist_configure(itype, num);
 }
 
-void gic_eoi(int intn)
-{
+void gic_eoi(int intn) {
 	GICC_REG(GICC_EOIR) = spi2id(intn);
 }
 
-int gic_getack()
-{
+int gic_getack() {
 	return GICC_REG(GICC_IAR);
 }
 
@@ -197,31 +184,27 @@ int gic_getack()
 
 static ISR isrs[NUM_INTSRC];
 
-static void default_isr (struct trapframe *tf, int n)
-{
-    cprintf ("unhandled interrupt: %d\n", n);
+static void default_isr(struct trapframe* tf, int n) {
+	cprintf("unhandled interrupt: %d\n", n);
 }
 
 
-void pic_enable (int n, ISR isr)
-{
-	if(n < NUM_INTSRC) {
+void pic_enable(int n, ISR isr) {
+	if (n < NUM_INTSRC) {
 		isrs[n] = isr;
 	}
 }
 
-void isr_init()
-{
+void isr_init() {
 	int i;
-	for (i=0; i< NUM_INTSRC; i++)
+	for (i = 0; i < NUM_INTSRC; i++)
 		isrs[i] = default_isr;
 }
 /*
  * This section init gic according to CORTEX A15 reference manual
- * 8.3.1 distributor register and 8.3.2 
+ * 8.3.1 distributor register and 8.3.2
  */
-void gic_init(void * base)
-{
+void gic_init(void* base) {
 	gic_base = base;
 	gic_dist_init();
 	gic_cpu_init();
@@ -238,8 +221,7 @@ void gic_init(void * base)
 /*
  * dispatch the interrupt
  */
-void pic_dispatch (struct trapframe *tp)
-{
+void pic_dispatch(struct trapframe* tp) {
 	int intid, intn;
 	intid = gic_getack(); /* iack */
 	intn = intid - 32;

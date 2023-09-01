@@ -1,8 +1,7 @@
-
 .global trapret
 
 .macro	exception_1_entry
-	sub sp, sp, #0x20        /* reserverd for LR, SP, SPSR and ELR */
+	sub sp, sp, #0x20        /* reserved for LR, SP, SPSR and ELR */
 	stp	x28, x29, [sp, #-16]!
 	stp	x26, x27, [sp, #-16]!
 	stp	x24, x25, [sp, #-16]!
@@ -33,7 +32,7 @@
 
 	msr	elr_el3, x22             /* ELR */
 	msr	spsr_el3, x23
-	
+
 	mov x29, sp
 	mov sp, x28
 

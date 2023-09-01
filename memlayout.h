@@ -1,8 +1,8 @@
 // Memory layout
 
 // Key addresses for address space layout (see kmap in vm.c for layout)
-#define KERNBASE  		0xFFFFFFFF00000000	
-// First kernel virtual ram address 
+#define KERNBASE  		0xFFFFFFFF00000000
+// First kernel virtual ram address
 // V:0xFFFF_FFFF_4000_0000 ==> P:0x40000000  (PHY_START)
 
 // we first map 2MB low memory containing kernel code.
@@ -11,8 +11,8 @@
 
 #ifndef __ASSEMBLER__
 
-static inline uint64 v2p(void *a) { return ((uint64) (a))  - (uint64)KERNBASE; }
-static inline void *p2v(uint64 a) { return (void *) ((a) + (uint64)KERNBASE); }
+static inline uint64 v2p(void* a) { return ((uint64)(a)) - (uint64)KERNBASE; }
+static inline void* p2v(uint64 a) { return (void*)((a)+(uint64)KERNBASE); }
 
 #endif
 

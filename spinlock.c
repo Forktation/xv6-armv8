@@ -9,8 +9,7 @@
 #include "proc.h"
 #include "spinlock.h"
 
-void initlock(struct spinlock *lk, char *name)
-{
+void initlock(struct spinlock* lk, char* name) {
     lk->name = name;
     lk->locked = 0;
     lk->cpu = 0;
@@ -19,24 +18,22 @@ void initlock(struct spinlock *lk, char *name)
 // For single CPU systems, there is no need for spinlock.
 // Add the support when multi-processor is supported.
 
-
 // Acquire the lock.
 // Loops (spins) until the lock is acquired.
 // Holding a lock for a long time may cause
 // other CPUs to waste time spinning to acquire it.
-void acquire(struct spinlock *lk)
-{
+void acquire(struct spinlock* lk) {
     pushcli();		// disable interrupts to avoid deadlock.
     lk->locked = 1;	// set the lock status to make the kernel happy
 
 #if 0
-    if(holding(lk))
+    if (holding(lk))
         panic("acquire");
 
     // The xchg is atomic.
     // It also serializes, so that reads after acquire are not
     // reordered before it.
-    while(xchg(&lk->locked, 1) != 0)
+    while (xchg(&lk->locked, 1) != 0)
         ;
 
     // Record info about lock acquisition for debugging.
@@ -47,10 +44,9 @@ void acquire(struct spinlock *lk)
 }
 
 // Release the lock.
-void release(struct spinlock *lk)
-{
+void release(struct spinlock* lk) {
 #if 0
-    if(!holding(lk))
+    if (!holding(lk))
         panic("release");
 
     lk->pcs[0] = 0;
@@ -72,10 +68,7 @@ void release(struct spinlock *lk)
     popcli();
 }
 
-
 // Check whether this cpu is holding the lock.
-int holding(struct spinlock *lock)
-{
+int holding(struct spinlock* lock) {
     return lock->locked; // && lock->cpu == cpus;
 }
-

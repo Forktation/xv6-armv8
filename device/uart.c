@@ -5,8 +5,8 @@
 #include "arm.h"
 #include "memlayout.h"
 
-static volatile uint *uart_base;
-void isr_uart (struct trapframe *tf, int idx);
+static volatile uint* uart_base;
+void isr_uart(struct trapframe* tf, int idx);
 
 #define UART_DR		0	// data register
 #define UART_RSR	1	// receive status register/error clear register
@@ -30,58 +30,53 @@ void isr_uart (struct trapframe *tf, int idx);
 #define UART_BITRATE 19200
 
 // enable uart
-void uart_init (void *addr)
-{
-    uint left;
+void uart_init(void* addr) {
+  uint left;
 
-    uart_base = addr;
+  uart_base = addr;
 
-    // set the bit rate: integer/fractional baud rate registers
-    uart_base[UART_IBRD] = UART_CLK / (16 * UART_BITRATE);
+  // set the bit rate: integer/fractional baud rate registers
+  uart_base[UART_IBRD] = UART_CLK / (16 * UART_BITRATE);
 
-    left = UART_CLK % (16 * UART_BITRATE);
-    uart_base[UART_FBRD] = (left * 4 + UART_BITRATE / 2) / UART_BITRATE;
+  left = UART_CLK % (16 * UART_BITRATE);
+  uart_base[UART_FBRD] = (left * 4 + UART_BITRATE / 2) / UART_BITRATE;
 
-    // enable trasmit and receive
-    uart_base[UART_CR] |= (UARTCR_EN | UARTCR_RXE | UARTCR_TXE);
+  // enable trasmit and receive
+  uart_base[UART_CR] |= (UARTCR_EN | UARTCR_RXE | UARTCR_TXE);
 
-    // enable FIFO
-    uart_base[UART_LCR] |= UARTLCR_FEN;
+  // enable FIFO
+  uart_base[UART_LCR] |= UARTLCR_FEN;
 }
 
 // enable the receive (interrupt) for uart (after PIC has initialized)
-void uart_enable_rx ()
-{
-    uart_base[UART_IMSC] = UART_RXI;
-    pic_enable(PIC_UART0, isr_uart);
+void uart_enable_rx() {
+  uart_base[UART_IMSC] = UART_RXI;
+  pic_enable(PIC_UART0, isr_uart);
 }
 
-void uartputc (int c)
-{
-    // wait a short period if the transmit FIFO is full
-    while (uart_base[UART_FR] & UARTFR_TXFF) {
-        micro_delay(10);
-    }
+void uartputc(int c) {
+  // wait a short period if the transmit FIFO is full
+  while (uart_base[UART_FR] & UARTFR_TXFF) {
+    micro_delay(10);
+  }
 
-    uart_base[UART_DR] = c;
+  uart_base[UART_DR] = c;
 }
 
 //poll the UART for data
-int uartgetc (void)
-{
-    if (uart_base[UART_FR] & UARTFR_RXFE) {
-        return -1;
-    }
+int uartgetc(void) {
+  if (uart_base[UART_FR] & UARTFR_RXFE) {
+    return -1;
+  }
 
-    return uart_base[UART_DR];
+  return uart_base[UART_DR];
 }
 
-void isr_uart (struct trapframe *tf, int idx)
-{
-    if (uart_base[UART_MIS] & UART_RXI) {
-        consoleintr(uartgetc);
-    }
+void isr_uart(struct trapframe* tf, int idx) {
+  if (uart_base[UART_MIS] & UART_RXI) {
+    consoleintr(uartgetc);
+  }
 
-    // clear the interrupt
-    uart_base[UART_ICR] = UART_RXI | UART_TXI;
+  // clear the interrupt
+  uart_base[UART_ICR] = UART_RXI | UART_TXI;
 }

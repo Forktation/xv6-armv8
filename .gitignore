@@ -2,3 +2,6 @@ build
 *.asm
 *.sym
 *.o
+.vscode
+# kernel.elf
+*.log

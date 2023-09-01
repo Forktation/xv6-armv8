@@ -4,8 +4,7 @@ ENTRY(_start)
 
 ENTRY_INIT_STACK_SIZE = 0x2000;
 
-SECTIONS
-{
+SECTIONS {
   /* the entry point, before enabling paging. The code to enable paing
    needs to have the same virtual/physical address. entry.S and start.c
    run in this initial setting.*/
