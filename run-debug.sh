@@ -1,5 +1,5 @@
 echo run xv6 armv8 in debug mode
-export PATH=$PATH:/home/lakshman/Acads/695_osdi/qemu_git/qemu-arm/aarch64-softmmu
+export PATH=$PATH:path_to_qemu_softmmu/qemu-arm/aarch64-softmmu
 
 clear
 
