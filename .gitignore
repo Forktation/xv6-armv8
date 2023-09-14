@@ -3,5 +3,5 @@ build
 *.sym
 *.o
 .vscode
-# kernel.elf
+kernel.elf
 *.log

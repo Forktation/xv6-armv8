@@ -1,5 +1,5 @@
 echo run armv8 with qemu logging feature 'qemu.log'
-export PATH=$PATH:path_to_qemu_softmmu/qemu-arm/aarch64-softmmu
+# export PATH=$PATH:path_to_qemu_softmmu/qemu-arm/aarch64-softmmu
 
 clear
 
