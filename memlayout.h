@@ -1,13 +1,13 @@
 // Memory layout
 
 // Key addresses for address space layout (see kmap in vm.c for layout)
-#define KERNBASE  		0xFFFFFFFF00000000
+#define KERNBASE 0xFFFFFFFF00000000
 // First kernel virtual ram address
 // V:0xFFFF_FFFF_4000_0000 ==> P:0x40000000  (PHY_START)
 
 // we first map 2MB low memory containing kernel code.
-#define INIT_KERN_SZ	0x200000
-#define INIT_KERNMAP 	(INIT_KERN_SZ + PHY_START)
+#define INIT_KERN_SZ 0x200000
+#define INIT_KERNMAP (INIT_KERN_SZ + PHY_START)
 
 #ifndef __ASSEMBLER__
 

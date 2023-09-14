@@ -53,10 +53,10 @@ extern void* vectors;
 
 // setup the boot page table: dev_mem whether it is device memory
 void set_bootpgtbl(uint64 virt, uint64 phy, uint len, int dev_mem) {
-  uint64	pde;
-  int         idx;
-  int		pgdidx;
-  int		pmdidx;
+  uint64 pde;
+  int idx;
+  int pgdidx;
+  int pmdidx;
   uint64* level2;
 
   for (idx = 0; idx < len; idx = idx + 0x200000) {
@@ -198,8 +198,8 @@ void clear_bss(void) {
 }
 
 void start(void) {
-  uint64	l2pgtbl;
-  uint	index;
+  uint64 l2pgtbl;
+  uint index;
 
   _puts("starting xv6 for ARMv8...\n");
 
