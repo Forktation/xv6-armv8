@@ -34,7 +34,6 @@
 	msr	spsr_el1, x23
 
 	mov x29, sp
-  add sp, sp #0x110            /* not sure about this.. */
 	mov sp, x28
 
 	ldp	x0, x1, [x29], #16
@@ -91,6 +90,7 @@
 	msr sp_el0, x28
 
 	mov x29, sp
+  add sp, sp, #0x110           /* they use this there */
 
 	ldp	x0, x1, [x29], #16
 	ldp	x2, x3, [x29], #16
