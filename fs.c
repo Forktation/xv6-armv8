@@ -529,15 +529,11 @@ struct inode* dirlookup(struct inode* dp, char* name, uint* poff) {
       panic("dirlink read");
     }
 
-    if (de.inum == 0) {
-      continue;
-    }
+    if (de.inum == 0) continue;
 
     if (namecmp(name, de.name) == 0) {
       // entry matches path element
-      if (poff) {
-        *poff = off;
-      }
+      if (poff) *poff = off;
 
       inum = de.inum;
       return iget(dp->dev, inum);
@@ -561,13 +557,9 @@ int dirlink(struct inode* dp, char* name, uint inum) {
 
   // Look for an empty dirent.
   for (off = 0; off < dp->size; off += sizeof(de)) {
-    if (readi(dp, (char*)&de, off, sizeof(de)) != sizeof(de)) {
-      panic("dirlink read");
-    }
+    if (readi(dp, (char*)&de, off, sizeof(de)) != sizeof(de)) panic("dirlink read");
 
-    if (de.inum == 0) {
-      break;
-    }
+    if (de.inum == 0) break;
   }
 
   strncpy(de.name, name, DIRSIZ);
@@ -579,9 +571,6 @@ int dirlink(struct inode* dp, char* name, uint inum) {
 
   return 0;
 }
-
-//PAGEBREAK!
-// Paths
 
 // Copy the next path element from path into name.
 // Return a pointer to the element following the copied one.
