@@ -65,3 +65,13 @@ Ahh... its over osbros
 // Log appends are synchronous.
 
 ```
+
+### AHH
+
+```c
+// Process memory is laid out contiguously, low addresses first:
+//   text
+//   original data and bss
+//   fixed-size stack
+//   expandable heap
+```

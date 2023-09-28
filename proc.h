@@ -4,11 +4,11 @@
 // Per-CPU state, now we only support one CPU
 struct cpu {
   uchar           id;             // index into cpus[] below
-  struct context* scheduler;    // swtch() here to enter scheduler
+  struct context* scheduler;      // swtch() here to enter scheduler
   volatile uint   started;        // Has the CPU started?
 
-  int             ncli;           // Depth of pushcli nesting.
-  int             intena;         // Were interrupts enabled before pushcli?
+  int ncli;                       // Depth of pushcli nesting.
+  int intena;                     // Were interrupts enabled before pushcli?
 
   // Cpu-local storage variables; see below
   struct cpu* cpu;
@@ -73,9 +73,4 @@ struct proc {
   char name[16];                  // Process name (debugging)
 };
 
-// Process memory is laid out contiguously, low addresses first:
-//   text
-//   original data and bss
-//   fixed-size stack
-//   expandable heap
 #endif
